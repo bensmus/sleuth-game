@@ -10,17 +10,37 @@
             background-color: black;
             color: white;
             display: grid;
+            gap: 10px;
             grid-template-columns: 1fr 1fr 1fr;
             user-select: none;
+            font-size: 20px;
         }
-        #filters-section {
+        table {
+            font-size: 12px;
+        }
+        tr:hover {
+            background-color: rgb(36, 36, 36);
+        }
+        table, th, td {
+            border: 1px solid white;
+            border-collapse: collapse;
+        }
+        table th {
+            text-align: left;
+        }
+        #filters {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
+            margin: 10px;
         }
-        #filters-section button {
+        #input-form button {
             display: block;
-            margin: 5px;
+            height: 40px;
             width: 100px;
+            margin: 10px;
+        }
+        #log {
+            font-size: 14px;
         }
         .red {
             color: red;
@@ -34,90 +54,136 @@
         .blue {
             color: blue;
         }
-        .row {
-            padding: 1px;
-        }
-        #cards-list-section input {
-            position: absolute; /* avoid dead (non-clickable) space */
-            left: 40px;
-        }
-        #cards-list-section label {
-            display: inline-block; /* like inline but we can add a width */
-            width: 50px;
-        }
     </style>
 </head>
 
 <body>
-    <section id="cards-list-section">
-    </section>
-    <section id="filters-section">
-        <div>
-            <button>Yellow</button>
-            <button>Red</button>
-            <button>Green</button>
-            <button>Blue</button>
-        </div>
-        <div>
-            <button>Diamond</button>
-            <button>Opal</button>
-            <button>Pearl</button>
-        </div>
-        <div>
-            <button>Solitaire</button>
-            <button>Pair</button>
-            <button>Cluster</button>
-        </div>
-    </section>
-    <section id="submit-section">
+    <table>
+        <tbody id="cards-variables-table">
+        </tbody>
+    </table>
+    <form id="input-form">
         <select name="person-select" id="person-select">
-            <option>Kay</option>
-            <option>Landon</option>
-            <option>Joseph</option>
-            <option>Me</option>
+            <option value="self">Me</option>
+            <option value="a">Kay</option>
+            <option value="b">Landon</option>
+            <option value="c">Joseph</option>
         </select>
         <span>has</span>
-        <input type="number" name="" id="">
-        <button>Submit</button>
+        <input type="number" name="count" value="1" id="card-count" placeholder="Enter quantity" min="1" required>
+        <div id="filters">
+            <fieldset>
+                <legend>Color</legend>
+                <div>
+                  <input type="radio" id="red-input" name="color" value="red" checked />
+                  <label for="red-input">Red</label>
+                </div>
+                <div>
+                  <input type="radio" id="yellow-input" name="color" value="yellow" />
+                  <label for="yellow-input">Yellow</label>
+                </div>
+                <div>
+                  <input type="radio" id="green-input" name="color" value="green" />
+                  <label for="green-input">Green</label>
+                </div>
+                <div>
+                    <input type="radio" id="blue-input" name="color" value="blue" />
+                    <label for="blue-input">Blue</label>
+                </div>
+                <div>
+                    <input checked type="radio" id="any-color-input" name="color" value="any" />
+                    <label for="any-color-input">Any</label>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Shape</legend>
+                <div>
+                  <input type="radio" id="diamond-input" name="shape" value="diamond" checked />
+                  <label for="diamond-input">Diamond</label>
+                </div>
+                <div>
+                  <input type="radio" id="opal-input" name="shape" value="opal" />
+                  <label for="opal-input">Opal</label>
+                </div>
+                <div>
+                  <input type="radio" id="pearl-input" name="shape" value="pearl" />
+                  <label for="pearl-input">Pearl</label>
+                </div>
+                <div>
+                    <input checked type="radio" id="any-shape-input" name="shape" value="any" />
+                    <label for="any-shape-input">Any</label>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Length</legend>
+                <div>
+                  <input type="radio" id="solitaire-input" name="length" value="solitaire" checked />
+                  <label for="solitaire-input">Solitaire</label>
+                </div>
+                <div>
+                  <input type="radio" id="pair-input" name="length" value="pair" />
+                  <label for="pair-input">Pair</label>
+                </div>
+                <div>
+                  <input type="radio" id="cluster-input" name="length" value="cluster" />
+                  <label for="cluster-input">Cluster</label>
+                </div>
+                <div>
+                    <input checked type="radio" id="any-length-input" name="length" value="any" />
+                    <label for="any-length-input">Any</label>
+                </div>
+            </fieldset>
+        </div>
+        <button type="button">Submit</button>
+        <button type="button">Undo</button>
+    </form>
+    <section id="log">
+        <h1>LOG</h1>
+        <div>Initial state</div>
     </section>
 </body>
 <script>
     function getCardTableHtml() {
         function getColorGroupHtml(color) {
             function getSuitGroupHtml(suit) {
-                function getCountHtml(count) {
-                    const text = suit.repeat(count);
+                function getLengthHtml(length) {
+                    // ✅
+                    // ❌
                     return `
-                        <div class="${color} row">
-                            <label for="${color}-${text}-input">${text}</label>
-                            <input 
-                                type="checkbox" 
-                                id="${color}-${text}-input" 
-                                name="${color}-${text}"
-                            >
-                        </div>
+                        <tr>
+                            <td><span class=${color}>${suit} ${length}</span></td>
+                            <td>❔</td>
+                            <td>❔</td>
+                            <td>❔</td>
+                        </tr>
                     `
                 }
                 return `
-                ${getCountHtml(1)}
-                ${getCountHtml(2)}
-                ${getCountHtml(3)}
+                ${getLengthHtml('Solitaire')}
+                ${getLengthHtml('Pair')}
+                ${getLengthHtml('Cluster')}
                 `
             }
             return `
-            ${getSuitGroupHtml('D')}
-            ${getSuitGroupHtml('O')}
-            ${getSuitGroupHtml('P')}
+            ${getSuitGroupHtml('Diamond')}
+            ${getSuitGroupHtml('Opal')}
+            ${getSuitGroupHtml('Pearl')}
             `
         }
         return `
+        <tr>
+            <th>Card</th>
+            <th>Me</th>
+            <th>Kay</th>
+            <th>Landon</th>
+        </tr>
         ${getColorGroupHtml('red')}
         ${getColorGroupHtml('yellow')}
         ${getColorGroupHtml('green')}
         ${getColorGroupHtml('blue')}
         `
     }
-    const cardTable = document.getElementById('cards-list-section')
+    const cardTable = document.getElementById('cards-variables-table')
     cardTable.innerHTML = getCardTableHtml()
 </script>
 </html>
