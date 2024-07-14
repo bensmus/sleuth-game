@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            user-select: none;
+        }
+        #filters-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        #filters-section button {
+            display: block;
+            margin: 5px;
+            width: 100px;
+        }
+        .red {
+            color: red;
+        }
+        .green {
+            color: green;
+        }
+        .yellow {
+            color: rgb(255, 255, 1);
+        }
+        .blue {
+            color: blue;
+        }
+        .row {
+            padding: 1px;
+        }
+        #cards-list-section input {
+            position: absolute; /* avoid dead (non-clickable) space */
+            left: 40px;
+        }
+        #cards-list-section label {
+            display: inline-block; /* like inline but we can add a width */
+            width: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <section id="cards-list-section">
+    </section>
+    <section id="filters-section">
+        <div>
+            <button>Yellow</button>
+            <button>Red</button>
+            <button>Green</button>
+            <button>Blue</button>
+        </div>
+        <div>
+            <button>Diamond</button>
+            <button>Opal</button>
+            <button>Pearl</button>
+        </div>
+        <div>
+            <button>Solitaire</button>
+            <button>Pair</button>
+            <button>Cluster</button>
+        </div>
+    </section>
+    <section id="submit-section">
+        <select name="person-select" id="person-select">
+            <option>Kay</option>
+            <option>Landon</option>
+            <option>Joseph</option>
+            <option>Me</option>
+        </select>
+        <span>has</span>
+        <input type="number" name="" id="">
+        <button>Submit</button>
+    </section>
+</body>
+<script>
+    function getCardTableHtml() {
+        function getColorGroupHtml(color) {
+            function getSuitGroupHtml(suit) {
+                function getCountHtml(count) {
+                    const text = suit.repeat(count);
+                    return `
+                        <div class="${color} row">
+                            <label for="${color}-${text}-input">${text}</label>
+                            <input 
+                                type="checkbox" 
+                                id="${color}-${text}-input" 
+                                name="${color}-${text}"
+                            >
+                        </div>
+                    `
+                }
+                return `
+                ${getCountHtml(1)}
+                ${getCountHtml(2)}
+                ${getCountHtml(3)}
+                `
+            }
+            return `
+            ${getSuitGroupHtml('D')}
+            ${getSuitGroupHtml('O')}
+            ${getSuitGroupHtml('P')}
+            `
+        }
+        return `
+        ${getColorGroupHtml('red')}
+        ${getColorGroupHtml('yellow')}
+        ${getColorGroupHtml('green')}
+        ${getColorGroupHtml('blue')}
+        `
+    }
+    const cardTable = document.getElementById('cards-list-section')
+    cardTable.innerHTML = getCardTableHtml()
+</script>
+</html>
