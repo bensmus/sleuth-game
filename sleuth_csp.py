@@ -84,17 +84,17 @@ all_vars = get_vars()
 problem = Problem()
 problem.addVariables(all_vars, [0, 1])
 
-# CONSTRAINT Only one sleuth card:
+# CONSTRAINT: Only one sleuth card:
 problem.addConstraint(ExactSumConstraint(1), get_vars(group_match='sleuth'))
 
-# CONSTRAINT Only num_faceup faceup cards:
+# CONSTRAINT: Only num_faceup faceup cards:
 problem.addConstraint(ExactSumConstraint(num_faceup), get_vars(group_match='faceup'))
 
-# CONSTRAINTS Players have same number of cards:
+# CONSTRAINTS: Players have same number of cards:
 for player in players:
     problem.addConstraint(ExactSumConstraint(num_cards_per_player), get_vars(group_match=player))
 
-# CONSTRAINTS Every card can only be in one group:
+# CONSTRAINTS: Every card can only be in one group:
 for color in COLORS:
     for shape in SHAPES:
         for length in LENGTHS:
@@ -102,12 +102,17 @@ for color in COLORS:
 
 sleuth_card, faceup_cards, player_cards = deal_cards()
 
-# CONSTRAINT Faceup cards are known: (adding to num_faceup means that they are all 1)
+# CONSTRAINT: Faceup cards are known: (adding to num_faceup means that they are all 1)
 faceup_vars = [f'faceup-{card}' for card in faceup_cards]
 if faceup_vars != []:
     problem.addConstraint(ExactSumConstraint(num_faceup), faceup_vars)
 
-# CONSTRAINT Self cards are known:
+# CONSTRAINT: Self cards are known:
 problem.addConstraint(ExactSumConstraint(num_cards_per_player), [f'{SELF_NAME}-{card}' for card in player_cards[SELF_NAME]])
 
-pp.pprint(problem.getSolution())
+iter = problem.getSolutionIter()
+sol1 = next(iter)
+pp.pprint(sol1)
+print('------------------------------------------------')
+sol2 = next(iter)
+pp.pprint(sol2)
