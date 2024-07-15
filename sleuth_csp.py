@@ -1,4 +1,4 @@
-from constraint import Problem, ExactSumConstraint, MinConflictsSolver
+from constraint import Problem, ExactSumConstraint
 import random
 from pprint import PrettyPrinter 
 pp = PrettyPrinter(indent=4)
@@ -110,9 +110,29 @@ if faceup_vars != []:
 # CONSTRAINT: Self cards are known:
 problem.addConstraint(ExactSumConstraint(num_cards_per_player), [f'{SELF_NAME}-{card}' for card in player_cards[SELF_NAME]])
 
-iter = problem.getSolutionIter()
-sol1 = next(iter)
-pp.pprint(sol1)
-print('------------------------------------------------')
-sol2 = next(iter)
-pp.pprint(sol2)
+
+def add_count_constraint(count, player, color_match='any', shape_match='any', length_match='any'):
+    matchers = [color_match, shape_match, length_match]
+    specificity = matchers.count('any')
+
+    # Describing a single card:
+    assert (specificity == 0 and count == 1) or (specificity != 0)
+    
+    # Describing at most num_cards_per_player cards:
+    assert num_cards_per_player >= count
+
+    problem.addConstraint(
+        ExactSumConstraint(count), 
+        get_vars(group_match=player, color_match=color_match, shape_match=shape_match, length_match=length_match)
+    )
+
+
+# add_count_constraint(3, 'joseph', shape_match='pearl')
+print(problem.getSolution())
+
+# iter = problem.getSolutionIter()
+# sol1 = next(iter)
+# pp.pprint(sol1)
+# print('------------------------------------------------')
+# sol2 = next(iter)
+# pp.pprint(sol2)
